@@ -3,9 +3,16 @@ import { useState } from "react"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { NewExerciseModal } from "./components/NewExerciseModal";
 
+interface Exercise {
+  name: string;
+  sets: string;
+  reps: string;
+  difficulty: string;
+}
+
 export default function Workout() {
     const [newExerciseModalOpen, setNewExerciseModalOpen] = useState<Boolean>(false);
-    const [exercises, setExercises] = useState<Array<object>>([])
+    const [exercises, setExercises] = useState<Array<Exercise>>([])
 
     // handle opening or closing of modal
     function newExerciseButtonClick(open: Boolean) {
@@ -41,6 +48,17 @@ export default function Workout() {
                     <Text>Challenging</Text>
                 </View>
             </View>
+            {exercises.map(exercise => {
+                return (
+                    <View style={styles.exerciseCard}>
+                        <Text style={styles.exerciseCardTitle}>{exercise.name}</Text>
+                        <View style={styles.exerciseCardContent}>
+                            <Text>{`${exercise.sets} sets / ${exercise.reps} reps`}</Text>
+                            <Text>Challenging</Text>
+                        </View>
+                    </View>
+                )
+            })}
             <Pressable style={styles.newExerciseButton} onPress={() => newExerciseButtonClick(true)}>
                 <Text style={styles.buttonText}>add exercise</Text>
             </Pressable>

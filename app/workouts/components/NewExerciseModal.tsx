@@ -10,6 +10,12 @@ export function NewExerciseModal({ onClose, addExercise }: NewExerciseModalProps
     const [name, setName] = useState<string>("")
     const [sets, setSets] = useState<string>('0')
     const [reps, setReps] = useState<string>('0')
+    const [difficulty, setDifficulty] = useState<string>("")
+
+
+    function onSave() {
+        addExercise(name, sets, reps, difficulty);
+    }
     return (
         <View>
             <Modal animationType="slide" transparent={true} /*visible={isVisible}*/>
@@ -29,7 +35,7 @@ export function NewExerciseModal({ onClose, addExercise }: NewExerciseModalProps
                         <TextInput style={styles.input} value={reps} keyboardType="numeric" onChangeText={text => setReps(text)}></TextInput>
                         <Text>Difficulty</Text>
                         <TextInput style={styles.input}></TextInput>
-                        <Pressable style={styles.newExerciseButton}><Text>Save</Text></Pressable>
+                        <Pressable style={styles.newExerciseButton} onPress={() => onSave()}><Text>Save</Text></Pressable>
                     </View>
                 </View>
             </Modal>
