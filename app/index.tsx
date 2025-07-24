@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Pressable } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import Constants from "expo-constants";
 import React, { useState, useEffect } from 'react'
 import { Link } from "expo-router"
 import { createClient } from "@supabase/supabase-js"
@@ -8,8 +9,18 @@ export default function Home() {
     const [email, setEmail] = useState("nabeel.sddq@gmail.com");
     const [password, setPassword] = useState("password");
 
-    const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-    const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+    const extra = Constants.expoConfig?.extra as {
+        EXPO_PUBLIC_SUPABASE_URL?: string;
+        EXPO_PUBLIC_SUPABASE_ANON_KEY?: string;
+    } | undefined;
+
+    const supabaseUrl = extra?.EXPO_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error("Missing Supabase environment variables.");
+    }
+
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     useEffect(() => {
