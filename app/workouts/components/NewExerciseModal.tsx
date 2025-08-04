@@ -33,6 +33,8 @@ export function NewExerciseModal({ onClose, addExercise }: NewExerciseModalProps
                         <TextInput style={styles.input} value={sets} keyboardType="numeric" onChangeText={text => setSets(text)}></TextInput>
                         <Text>Reps</Text>
                         <TextInput style={styles.input} value={reps} keyboardType="numeric" onChangeText={text => setReps(text)}></TextInput>
+                        <Text>Weight</Text>
+                        <TextInput style={styles.input} value={reps} keyboardType="numeric" onChangeText={text => setReps(text)}></TextInput>
                         <Text>Difficulty</Text>
                         <TextInput style={styles.input}></TextInput>
                         <Pressable style={styles.newExerciseButton} onPress={() => onSave()}><Text>Save</Text></Pressable>
@@ -47,11 +49,10 @@ const styles = StyleSheet.create({
     newExerciseButton: {
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderColor: '#25292e',
         padding: 20,
         marginTop: 24,
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        alignItems: 'center'
     },
     buttonText: {
         fontSize: 18,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     modalContent: {
         height: '75%',
         width: '100%',
-        backgroundColor: '#25292e',
+        backgroundColor: '#f0f0f0',
         borderTopRightRadius: 18,
         borderTopLeftRadius: 18,
         position: 'absolute',
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
         height: '16%',
-        backgroundColor: '#464C55',
+        backgroundColor: '#fafafa',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
         paddingHorizontal: 20,
@@ -81,7 +82,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     title: {
-        color: '#fff',
         fontSize: 16,
     },
     modalBody: {

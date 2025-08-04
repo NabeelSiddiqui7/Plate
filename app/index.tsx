@@ -1,30 +1,30 @@
-import { StyleSheet, Text, View, Pressable } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Constants from "expo-constants";
-import React, { useState, useEffect } from 'react'
-import { Link } from "expo-router"
-import { createClient } from "@supabase/supabase-js"
+import { Link } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { createClient } from "@supabase/supabase-js";
+import { RootState } from './redux/store';
+
+import { login } from "./redux/authSlice"; // ✅ Update path as needed
+
+const supabaseUrl = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase environment variables.");
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function Home() {
-    const [email, setEmail] = useState("nabeel.sddq@gmail.com");
-    const [password, setPassword] = useState("password");
-
-    const extra = Constants.expoConfig?.extra as {
-        EXPO_PUBLIC_SUPABASE_URL?: string;
-        EXPO_PUBLIC_SUPABASE_ANON_KEY?: string;
-    } | undefined;
-
-    const supabaseUrl = extra?.EXPO_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error("Missing Supabase environment variables.");
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    const dispatch = useDispatch();
+    const [email] = useState("nabeel.sddq@gmail.com");
+    const [password] = useState("password");
 
     useEffect(() => {
-        const login = async () => {
+        const handleLogin = async () => {
             const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
                 email,
                 password,
@@ -50,11 +50,11 @@ export default function Home() {
             if (profileError) {
                 console.log("Failed to fetch profile:", profileError.message);
             } else {
-                console.log("User profile:", profile);
+                dispatch(login(profile));
             }
         };
 
-        login();
+        handleLogin();
     }, []);
 
     return (
@@ -117,7 +117,7 @@ export default function Home() {
                 </Pressable>
             </Link>
         </SafeAreaView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         paddingTop: 40,
-        backgroundColor: '#fff'
+        backgroundColor: "#fff",
     },
     welcomeMessage: {
         fontSize: 28,
@@ -133,27 +133,27 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     cardGrid: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        justifyContent: "space-between",
         marginTop: 20,
     },
     column: {
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: "column",
         gap: 16,
     },
     homePageCard: {
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderColor: "#e0e0e0",
         padding: 16,
         marginBottom: 16,
         marginHorizontal: 4,
-        backgroundColor: '#fafafa',
+        backgroundColor: "#fafafa",
     },
     summaryHeader: {
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: "600",
         marginBottom: 8,
     },
     summaryItems: {
@@ -163,14 +163,14 @@ const styles = StyleSheet.create({
     newWorkoutButton: {
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderColor: "#e0e0e0",
         padding: 20,
         marginTop: 24,
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        alignItems: "center",
+        backgroundColor: "#f0f0f0",
     },
     buttonText: {
         fontSize: 18,
-        fontWeight: 'bold',
-    }
+        fontWeight: "bold",
+    },
 });

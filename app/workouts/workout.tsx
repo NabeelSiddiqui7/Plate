@@ -2,34 +2,51 @@ import { StyleSheet, Text, View, Pressable, Modal, TextInput } from "react-nativ
 import { useState } from "react"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { NewExerciseModal } from "./components/NewExerciseModal";
+import { ExerciseCard } from "./components/ExerciseCard";
+
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from '../redux/store';
+
 
 interface Exercise {
-  name: string;
-  sets: string;
-  reps: string;
-  difficulty: string;
+    name: string;
+    sets: number;
+    reps: number;
+    weight: number;
+    difficulty: string;
 }
 
 export default function Workout() {
     const [newExerciseModalOpen, setNewExerciseModalOpen] = useState<Boolean>(false);
     const [exercises, setExercises] = useState<Array<Exercise>>([])
+    const profile = useSelector((state: RootState) => state.auth.profile);
 
     // handle opening or closing of modal
     function newExerciseButtonClick(open: Boolean) {
         setNewExerciseModalOpen(open);
     }
 
-    function addExercise(name: string, sets: string, reps: string, difficulty: string) {
+    function onSaveWorkoutButtonClick() {
+        console.log(profile)
+        // const { data: workout, error } = await supabase
+        //     .from("workouts")
+        //     .insert({ user_id: user.id }) // assuming you got `user` from auth
+        //     .select()
+        //     .single();
+
+        // await supabase.from("exercises").insert(exercises);
+    }
+
+    function addExercise(name: string, sets: number, reps: number, weight: number, difficulty: string) {
         const exercise = {
             name,
             sets,
             reps,
+            weight,
             difficulty
         }
         setExercises([...exercises, exercise])
     }
-
-    console.log(exercises)
 
     return (
         <SafeAreaView style={styles.container}>
@@ -50,13 +67,7 @@ export default function Workout() {
             </View>
             {exercises.map(exercise => {
                 return (
-                    <View style={styles.exerciseCard}>
-                        <Text style={styles.exerciseCardTitle}>{exercise.name}</Text>
-                        <View style={styles.exerciseCardContent}>
-                            <Text>{`${exercise.sets} sets / ${exercise.reps} reps`}</Text>
-                            <Text>Challenging</Text>
-                        </View>
-                    </View>
+                    <ExerciseCard exercise={exercise} />
                 )
             })}
             <Pressable style={styles.newExerciseButton} onPress={() => newExerciseButtonClick(true)}>
@@ -64,14 +75,14 @@ export default function Workout() {
             </Pressable>
             <View style={styles.saveButtonsContainer}>
                 <Pressable style={styles.newExerciseButton}><Text>Save as template</Text></Pressable>
-                <Pressable style={styles.newExerciseButton}><Text>Save workout</Text></Pressable>
+                <Pressable style={styles.newExerciseButton} onPress={()=> onSaveWorkoutButtonClick()}><Text>Save workout</Text></Pressable>
             </View>
-
             {newExerciseModalOpen &&
                 <NewExerciseModal
                     addExercise={addExercise}
                     onClose={newExerciseButtonClick}
                 ></NewExerciseModal>}
+            {newExerciseModalOpen && <View style={styles.opacity} />}
         </SafeAreaView>
     )
 }
@@ -121,5 +132,14 @@ const styles = StyleSheet.create({
     },
     saveButtonsContainer: {
         flexDirection: 'row'
+    },
+    opacity: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: "100%",
+        width: "100%",
+        backgroundColor: 'black',
+        opacity: 0.5
     }
 })

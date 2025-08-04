@@ -7,6 +7,9 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -19,6 +22,7 @@ export default function RootLayout() {
   }
 
   return (
+    <Provider store={store}>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <Stack>
@@ -27,5 +31,6 @@ export default function RootLayout() {
       </SafeAreaProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
+    </Provider>
   );
 }
