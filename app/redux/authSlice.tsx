@@ -1,7 +1,17 @@
 // store/authSlice.ts
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+interface Profile {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface AuthState {
+  profile: Profile | null;
+}
+
+const initialState: AuthState = {
   profile: null,
 };
 
@@ -9,7 +19,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state, action) => {
+    login: (state, action: PayloadAction<Profile>) => {
       state.profile = action.payload;
     },
     logout: (state) => {

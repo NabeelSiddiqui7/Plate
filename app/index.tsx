@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { createClient } from "@supabase/supabase-js";
 import Constants from "expo-constants";
 import { Link } from "expo-router";
-import { useDispatch, useSelector } from "react-redux";
-import { createClient } from "@supabase/supabase-js";
-import { RootState } from './redux/store';
+import React, { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
 
 import { login } from "./redux/authSlice"; // ✅ Update path as needed
+import { setClient } from "./redux/clientSlice";
 
 const supabaseUrl = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -24,6 +24,7 @@ export default function Home() {
     const [password] = useState("password");
 
     useEffect(() => {
+        dispatch(setClient(supabase))
         const handleLogin = async () => {
             const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
                 email,

@@ -1,5 +1,5 @@
-import { Modal, View, Text, Pressable, TextInput, StyleSheet } from "react-native";
 import { useState } from "react";
+import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 interface NewExerciseModalProps {
     onClose: Function,
@@ -10,7 +10,7 @@ export function NewExerciseModal({ onClose, addExercise }: NewExerciseModalProps
     const [name, setName] = useState<string>("")
     const [sets, setSets] = useState<string>('0')
     const [reps, setReps] = useState<string>('0')
-    const [difficulty, setDifficulty] = useState<string>("")
+    const [difficulty, setDifficulty] = useState<string>("Easy")
 
 
     function onSave() {
@@ -36,7 +36,7 @@ export function NewExerciseModal({ onClose, addExercise }: NewExerciseModalProps
                         <Text>Weight</Text>
                         <TextInput style={styles.input} value={reps} keyboardType="numeric" onChangeText={text => setReps(text)}></TextInput>
                         <Text>Difficulty</Text>
-                        <TextInput style={styles.input}></TextInput>
+                        <TextInput style={styles.input} value={difficulty} onChangeText={text => setDifficulty(text)}></TextInput>
                         <Pressable style={styles.newExerciseButton} onPress={() => onSave()}><Text>Save</Text></Pressable>
                     </View>
                 </View>
