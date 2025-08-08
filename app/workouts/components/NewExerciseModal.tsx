@@ -9,12 +9,13 @@ interface NewExerciseModalProps {
 export function NewExerciseModal({ onClose, addExercise }: NewExerciseModalProps) {
     const [name, setName] = useState<string>("")
     const [sets, setSets] = useState<string>('0')
+    const [weight, setWeight] = useState<string>('0')
     const [reps, setReps] = useState<string>('0')
     const [difficulty, setDifficulty] = useState<string>("Easy")
 
 
     function onSave() {
-        addExercise(name, sets, reps, difficulty);
+        addExercise(name, sets, reps, weight, difficulty);
     }
     return (
         <View>
@@ -34,7 +35,7 @@ export function NewExerciseModal({ onClose, addExercise }: NewExerciseModalProps
                         <Text>Reps</Text>
                         <TextInput style={styles.input} value={reps} keyboardType="numeric" onChangeText={text => setReps(text)}></TextInput>
                         <Text>Weight</Text>
-                        <TextInput style={styles.input} value={reps} keyboardType="numeric" onChangeText={text => setReps(text)}></TextInput>
+                        <TextInput style={styles.input} value={weight} keyboardType="numeric" onChangeText={text => setWeight(text)}></TextInput>
                         <Text>Difficulty</Text>
                         <TextInput style={styles.input} value={difficulty} onChangeText={text => setDifficulty(text)}></TextInput>
                         <Pressable style={styles.newExerciseButton} onPress={() => onSave()}><Text>Save</Text></Pressable>

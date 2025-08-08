@@ -1,5 +1,6 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ExerciseCard } from "./components/ExerciseCard";
 import { NewExerciseModal } from "./components/NewExerciseModal";
@@ -16,8 +17,15 @@ interface Exercise {
     difficulty: string;
 }
 
+
+// not sure if this will actually be needed
+interface Workout {
+    name: string;
+}
+
 export default function Workout() {
     const [newExerciseModalOpen, setNewExerciseModalOpen] = useState<boolean>(false);
+    const [workoutName, setWorkoutName] = useState<string>("new workout");
     const [exercises, setExercises] = useState<Array<Exercise>>([])
     const profile = useSelector((state: RootState) => state.auth.profile);
     const supabase = useSelector((state: RootState) => state.client.client)
@@ -36,7 +44,7 @@ export default function Workout() {
 
         const { data: workout, error } = await supabase
             .from("workouts")
-            .insert({ user_id: profile.id! }) // assuming you got `user` from auth
+            .insert({ user_id: profile.id!, name: workoutName }) // assuming you got `user` from auth
             .select()
             .single();
         if (error) {
@@ -44,7 +52,7 @@ export default function Workout() {
         } else {
             console.log(workout)
         }
-        const savedExercises = exercises.map(exercise => {return {...exercise, workout_id: workout.id}})
+        const savedExercises = exercises.map(exercise => { return { ...exercise, workout_id: workout.id } })
         console.log(savedExercises);
 
         await supabase.from("exercises").insert(exercises);
@@ -62,41 +70,30 @@ export default function Workout() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.newWorkoutTitle}>new workout</Text>
-            <View style={styles.exerciseCard}>
-                <Text style={styles.exerciseCardTitle}>Incline Bench Press</Text>
-                <View style={styles.exerciseCardContent}>
-                    <Text>3 sets / 10 reps</Text>
-                    <Text>Challenging</Text>
+        <LinearGradient colors={['#0F2027', '#203A43', '#2C5364']}
+            style={{ flex: 1, padding: 20 }}>
+            <SafeAreaView style={styles.container}>
+                <TextInput style={styles.newWorkoutTitle} placeholder="new workout" placeholderTextColor={"gray"} onChangeText={text => setWorkoutName(text)}></TextInput>
+                {exercises.map(exercise => {
+                    return (
+                        <ExerciseCard exercise={exercise} />
+                    )
+                })}
+                <Pressable style={styles.newExerciseButton} onPress={() => newExerciseButtonClick(true)}>
+                    <Text style={styles.buttonText}>add exercise</Text>
+                </Pressable>
+                <View style={styles.saveButtonsContainer}>
+                    <Pressable style={styles.newExerciseButton}><Text>Save as template</Text></Pressable>
+                    <Pressable style={styles.newExerciseButton} onPress={() => onSaveWorkoutButtonClick()}><Text>Save workout</Text></Pressable>
                 </View>
-            </View>
-            <View style={styles.exerciseCard}>
-                <Text style={styles.exerciseCardTitle}>Incline Bench Press</Text>
-                <View style={styles.exerciseCardContent}>
-                    <Text>3 sets / 10 reps</Text>
-                    <Text>Challenging</Text>
-                </View>
-            </View>
-            {exercises.map(exercise => {
-                return (
-                    <ExerciseCard exercise={exercise} />
-                )
-            })}
-            <Pressable style={styles.newExerciseButton} onPress={() => newExerciseButtonClick(true)}>
-                <Text style={styles.buttonText}>add exercise</Text>
-            </Pressable>
-            <View style={styles.saveButtonsContainer}>
-                <Pressable style={styles.newExerciseButton}><Text>Save as template</Text></Pressable>
-                <Pressable style={styles.newExerciseButton} onPress={() => onSaveWorkoutButtonClick()}><Text>Save workout</Text></Pressable>
-            </View>
-            {newExerciseModalOpen &&
-                <NewExerciseModal
-                    addExercise={addExercise}
-                    onClose={newExerciseButtonClick}
-                ></NewExerciseModal>}
-            {newExerciseModalOpen && <View style={styles.opacity} />}
-        </SafeAreaView>
+                {newExerciseModalOpen &&
+                    <NewExerciseModal
+                        addExercise={addExercise}
+                        onClose={newExerciseButtonClick}
+                    ></NewExerciseModal>}
+                {newExerciseModalOpen && <View style={styles.opacity} />}
+            </SafeAreaView>
+        </LinearGradient>
     )
 }
 
@@ -105,7 +102,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         paddingTop: 40,
-        backgroundColor: '#fff'
+        // backgroundColor: '#fff'
     },
     newWorkoutTitle: {
         fontSize: 28,
